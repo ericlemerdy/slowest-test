@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite>
+  <testcase time="0.014" classname="PlainTest" name="should_test_1"/>
+  <testcase time="0.980" classname="PlainTest" name="should_test_2"/>
+  <testcase time="0.345" classname="PlainTest" name="should_test_3"/>
+  <testcase time="0.917" classname="PlainTest" name="should_test_4"/>
+  <testcase time="0.321" classname="PlainTest" name="should_test_5"/>
+  <testcase time="0.108" classname="PlainTest" name="should_test_6"/>
+  <testcase time="0.984" classname="PlainTest" name="should_test_7"/>
+</testsuite>

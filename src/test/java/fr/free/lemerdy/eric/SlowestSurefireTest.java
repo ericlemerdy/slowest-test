@@ -21,8 +21,8 @@ public class SlowestSurefireTest {
 		
 		assertThat(testReports.size()).isEqualTo(7);
 		assertThat(testReports.get(0).time).isEqualTo(0.014d);
-		assertThat(testReports.get(0).classname).isEqualTo("CoffeeMachineOrderTest");
-		assertThat(testReports.get(0).name).isEqualTo("for_a_chocolate_with_exact_price_with_2_sugar_should_order_chocolate_with_2_sugar_and_a_stick");
+		assertThat(testReports.get(0).classname).isEqualTo("PlainTest");
+		assertThat(testReports.get(0).name).isEqualTo("should_test_1");
     }
 	
 	@Test
