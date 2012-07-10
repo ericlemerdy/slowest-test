@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite>
+  <testcase time="9.382" classname="FullTest" name="should_test_full_1"/>
+  <testcase time="1.004" classname="FullTest" name="should_test_full_2"/>
+</testsuite>
