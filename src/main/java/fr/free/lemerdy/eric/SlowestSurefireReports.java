@@ -1,5 +1,6 @@
 package fr.free.lemerdy.eric;
 
+import static com.google.common.collect.Iterables.concat;
 import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Lists.newArrayList;
 
@@ -23,24 +24,31 @@ import javax.xml.stream.events.XMLEvent;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Throwables;
-import com.google.common.collect.Iterables;
-import com.google.common.io.Resources;
 
 public class SlowestSurefireReports {
 
-  public SlowestSurefireReports() {
+  private static FilenameFilter ONLY_TEST_RESULTS = new FilenameFilter() {
+    public boolean accept(File dir, String name) {
+      return name.startsWith("TEST-") && name.endsWith(".xml");
+    }
+  };
+  private String surefirePathname;
+
+  public SlowestSurefireReports(String surefirePathname) {
+    this.surefirePathname = surefirePathname;
   }
 
   public List<TestReport> slowestTests() throws URISyntaxException {
-    FilenameFilter onlyTestResults = new FilenameFilter() {
-      public boolean accept(File dir, String name) {
-        return name.startsWith("TEST-") && name.endsWith(".xml");
-      }
-    };
-    File testDir = new File(Resources.getResource("surefire-reports").toURI());
-    File[] files = testDir.listFiles(onlyTestResults);
-    ArrayList<File> testReportFiles = newArrayList(files);
-    Iterable<List<TestReport>> allTestReports = transform(testReportFiles, new Function<File, List<TestReport>>() {
+    File testDir = new File(surefirePathname);
+    ArrayList<File> testReportFiles = newArrayList(testDir.listFiles(ONLY_TEST_RESULTS));
+    Iterable<List<TestReport>> testReportByFile = transform(testReportFiles, parseTestsInFile());
+    ArrayList<TestReport> allTestReports = newArrayList(concat(testReportByFile));
+    Collections.sort(allTestReports);
+    return allTestReports;
+  }
+
+  private Function<File, List<TestReport>> parseTestsInFile() {
+    return new Function<File, List<TestReport>>() {
       public List<TestReport> apply(File inputFile) {
         ArrayList<TestReport> testReports = newArrayList();
         XMLInputFactory xmlif = XMLInputFactory.newInstance();
@@ -91,10 +99,7 @@ public class SlowestSurefireReports {
         }
         return testReports;
       };
-    });
-    ArrayList<TestReport> testReports = newArrayList(Iterables.concat(allTestReports));
-    Collections.sort(testReports);
-    return testReports;
+    };
   }
 
 }
