@@ -3,14 +3,9 @@ package fr.free.lemerdy.eric;
 import static org.fest.assertions.Assertions.assertThat;
 
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
-
-import com.google.common.io.Resources;
 
 public class SlowestSurefireTest {
 	@Test
@@ -28,9 +23,4 @@ public class SlowestSurefireTest {
         assertThat(testReports.get(7).name).isEqualTo("should_test_full_1");
     }
 	
-	@Test
-	public void should_read_test_dir() {
-      URL resource = Resources.getResource("surefire-reports");
-      Assert.assertNotNull(resource);
-    }
 }
