@@ -10,6 +10,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -23,7 +24,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
 
 public class SlowestSurefireReports {
@@ -92,7 +92,9 @@ public class SlowestSurefireReports {
         return testReports;
       };
     });
-    return newArrayList(Iterables.concat(allTestReports));
+    ArrayList<TestReport> testReports = newArrayList(Iterables.concat(allTestReports));
+    Collections.sort(testReports);
+    return testReports;
   }
 
 }
