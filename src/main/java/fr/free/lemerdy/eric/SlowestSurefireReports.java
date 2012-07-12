@@ -21,7 +21,17 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.PatternOptionBuilder;
+import org.apache.commons.cli.PosixParser;
+
 import com.google.common.base.Function;
+import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import com.google.common.base.Throwables;
 
@@ -40,7 +50,8 @@ public class SlowestSurefireReports {
 
   public List<TestReport> slowestTests() throws URISyntaxException {
     File testDir = new File(surefirePathname);
-    ArrayList<File> testReportFiles = newArrayList(testDir.listFiles(ONLY_TEST_RESULTS));
+    File[] listFiles = Objects.firstNonNull(testDir.listFiles(ONLY_TEST_RESULTS),new File[]{});
+    ArrayList<File> testReportFiles = newArrayList(listFiles);
     Iterable<List<TestReport>> testReportByFile = transform(testReportFiles, parseTestsInFile());
     ArrayList<TestReport> allTestReports = newArrayList(concat(testReportByFile));
     Collections.sort(allTestReports);
@@ -100,6 +111,45 @@ public class SlowestSurefireReports {
         return testReports;
       };
     };
+  }
+
+  public static void main(String[] args) throws ParseException, URISyntaxException {
+    Options options = new Options();
+    options.addOption(OptionBuilder.withLongOpt("help").withDescription("print this message").create('h'));
+    options.addOption(OptionBuilder.hasArg().withLongOpt("targetFilepath")
+        .withDescription("The target path. Should contains surefire-reports xml reports.")
+        .withType(PatternOptionBuilder.FILE_VALUE).create('f'));
+
+    CommandLineParser parser = new PosixParser();
+    CommandLine cmd = null;
+    try {
+      cmd = parser.parse(options, args, true);
+    } catch (ParseException e) {
+      e.printStackTrace();
+    }
+
+    if (cmd.hasOption("help")) {
+      printHelp(options);
+    } else if (cmd.hasOption("f")) {
+      File targetFilePath = (File) cmd.getParsedOptionValue("f");
+      System.out.println(targetFilePath.getAbsolutePath());
+      List<TestReport> slowestTests = new SlowestSurefireReports(targetFilePath.getAbsolutePath() + File.separator
+          + "surefire-reports").slowestTests();
+      if (slowestTests.size() == 0) {
+        System.out.println("No report files found.");
+      }
+      for (TestReport testReport : slowestTests) {
+        System.out.println(testReport.time + "ms " + testReport.classname + "." + testReport.name);
+      }
+    } else {
+      System.err.println("Missing target filepath option");
+      printHelp(options);
+    }
+  }
+
+  private static void printHelp(Options options) {
+    HelpFormatter formatter = new HelpFormatter();
+    formatter.printHelp("slowest-tests", options);
   }
 
 }
