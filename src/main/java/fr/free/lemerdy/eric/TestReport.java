@@ -10,7 +10,7 @@ public class TestReport implements Comparable<TestReport> {
 
   @Override
   public int compareTo(TestReport o) {
-    return time.compareTo(o.time);
+    return o.time.compareTo(time);
   }
   
   @Override

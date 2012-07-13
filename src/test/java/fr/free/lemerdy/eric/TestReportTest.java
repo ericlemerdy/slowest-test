@@ -7,14 +7,14 @@ import org.junit.Test;
 public class TestReportTest {
   @Test
   public void natural_order_should_be_time_desc() throws Exception {
-    TestReport testReportBefore = new TestReport();
-    testReportBefore.time = 1d;
-    TestReport testReportAfter = new TestReport();
-    testReportAfter.time = 2d;
+    TestReport testReportFaster = new TestReport();
+    testReportFaster.time = 1d;
+    TestReport testReportLonger = new TestReport();
+    testReportLonger.time = 2d;
     
-    int comparison = testReportBefore.compareTo(testReportAfter);
+    int comparison = testReportFaster.compareTo(testReportLonger);
     
-    assertThat(comparison).isLessThan(0);
+    assertThat(comparison).isGreaterThan(0);
   }
   @Test
   public void test_report_should_display_time_classname_and_test() throws Exception {

@@ -21,21 +21,21 @@ public class SlowestSurefireReportsTest {
     assertThat(testReports.size()).isEqualTo(4);
     Iterator<TestReport> testReportsIterator = testReports.iterator();
     TestReport testReport = testReportsIterator.next();
-    assertThat(testReport.time).isEqualTo(0.011d);
+    assertThat(testReport.time).isEqualTo(11d);
     assertThat(testReport.classname).isEqualTo("fr.PlainTest");
-    assertThat(testReport.name).isEqualTo("should_test_plain_2");
-    testReport = testReportsIterator.next();
-    assertThat(testReport.time).isEqualTo(1.01d);
-    assertThat(testReport.classname).isEqualTo("fr.ITTest");
-    assertThat(testReport.name).isEqualTo("should_test_it_1");
+    assertThat(testReport.name).isEqualTo("should_test_plain_1");
     testReport = testReportsIterator.next();
     assertThat(testReport.time).isEqualTo(10.001d);
     assertThat(testReport.classname).isEqualTo("fr.FullTest");
     assertThat(testReport.name).isEqualTo("should_test_full_1");
     testReport = testReportsIterator.next();
-    assertThat(testReport.time).isEqualTo(11d);
+    assertThat(testReport.time).isEqualTo(1.01d);
+    assertThat(testReport.classname).isEqualTo("fr.ITTest");
+    assertThat(testReport.name).isEqualTo("should_test_it_1");
+    testReport = testReportsIterator.next();
+    assertThat(testReport.time).isEqualTo(0.011d);
     assertThat(testReport.classname).isEqualTo("fr.PlainTest");
-    assertThat(testReport.name).isEqualTo("should_test_plain_1");
+    assertThat(testReport.name).isEqualTo("should_test_plain_2");
     assertThat(testReportsIterator.hasNext()).isFalse();
   }
 
