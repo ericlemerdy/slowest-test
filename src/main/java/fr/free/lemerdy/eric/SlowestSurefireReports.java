@@ -7,10 +7,8 @@ import static com.google.common.collect.Lists.newArrayList;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.List;
-
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
@@ -40,7 +38,7 @@ public class SlowestSurefireReports {
     this.parseTestsInFileReport = new ParseTestsInFileReport();
   }
 
-  public List<TestReport> readSlowestTests() throws URISyntaxException {
+  public List<TestReport> readSlowestTests() {
     File targetDirectory = new File(targetPathname);
     List<File> supportedReportDirectories = newArrayList(firstNonNull(targetDirectory.listFiles(ONLY_SUPPORTED_TEST_RESULTS), new File[]{}));
     Function<File, List<File>> allTestReportDir = new Function<File, List<File>>(){
