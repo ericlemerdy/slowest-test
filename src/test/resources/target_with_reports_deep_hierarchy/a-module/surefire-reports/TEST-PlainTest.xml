@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<testsuite>
-  <testcase time="11.000" classname="fr.PlainTest" name="should_test_plain_1"/>
-  <testcase time="0.011" classname="fr.PlainTest" name="should_test_plain_2"/>
-</testsuite>

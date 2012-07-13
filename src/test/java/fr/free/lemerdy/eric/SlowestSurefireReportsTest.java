@@ -13,7 +13,7 @@ import org.junit.Test;
 public class SlowestSurefireReportsTest {
   @Test
   public void with_target_containing_supported_test_report_should_order_test_results_by_time() throws URISyntaxException {
-    String targetWithReports = new File(getResource("target_with_reports_deep_hierarchy").toURI()).getAbsolutePath();
+    String targetWithReports = new File(getResource("root_with_reports_deep_hierarchy").toURI()).getAbsolutePath();
     
     SlowestSurefireReports slowestSurefireReports = new SlowestSurefireReports(targetWithReports);
     List<TestReport> testReports = slowestSurefireReports.readSlowestTests();
