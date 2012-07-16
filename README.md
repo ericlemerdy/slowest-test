@@ -14,7 +14,7 @@ usage:
         <plugins>
           ...
           <plugin>
-  				  <groupId>fr.free.lemerdy.eric</groupId>
+    			  <groupId>fr.free.lemerdy.eric</groupId>
   				  <artifactId>slowest-test-maven-plugin</artifactId>
   			  </plugin>
   from your project:
