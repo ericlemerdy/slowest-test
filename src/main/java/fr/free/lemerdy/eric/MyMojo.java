@@ -8,17 +8,17 @@ import org.apache.maven.plugin.MojoExecutionException;
 
 /**
  * @goal print
- * @phase verify
+ * @aggregator true
  */
 public class MyMojo extends AbstractMojo {
   /**
-   * @parameter expression="${project.build.directory}"
+   * @parameter expression="${basedir}"
    * @required
    */
-  private File outputDirectory;
+  private File basedir;
 
   public void execute() throws MojoExecutionException {
-    List<TestReport> readSlowestTests = new SlowestSurefireReports(outputDirectory.getAbsolutePath()).readSlowestTests();
+    List<TestReport> readSlowestTests = new SlowestSurefireReports(basedir.getAbsolutePath()).readSlowestTests();
     for (TestReport testReport : readSlowestTests) {
       getLog().info(testReport.toString());
     }
