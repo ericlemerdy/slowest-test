@@ -3,25 +3,29 @@ slowest-test
 
 A maven plugin to get the test methods ordered by execution time.
 
-usage:
-  in the plugin:
-    mvn clean install
-  in your project pom:
-    <project>
-      ...
-      <build>
-        ...
-        <plugins>
-          ...
-          <plugin>
-    			  <groupId>fr.free.lemerdy.eric</groupId>
-  				  <artifactId>slowest-test-maven-plugin</artifactId>
-  			  </plugin>
-  from your project:
-    mvn clean test slowest-test:print
+## usage:
 
-expected output:
-...
+ + in the plugin:
+
+```mvn clean install```
+
+ + in your project pom:
+
+```<project>...
+  <build>...
+     <plugins>...
+       <plugin>
+         <groupId>fr.free.lemerdy.eric</groupId>
+         <artifactId>slowest-test-maven-plugin</artifactId>
+       </plugin>
+```
+
+ + from your project:
+
+```mvn clean test slowest-test:print```
+
+## expected output:
+```...
 [INFO] ------------------------------------------------------------------------
 [INFO] Building <my-project> Maven pom 1.0-SNAPSHOT
 [INFO] ------------------------------------------------------------------------
@@ -31,7 +35,4 @@ expected output:
 [INFO]      0,002ms fr.free.lemerdy.eric.AppTest2.testApp
 [INFO] ------------------------------------------------------------------------
 [INFO] Reactor Summary:
-...
-  
-  
-  
+...```
