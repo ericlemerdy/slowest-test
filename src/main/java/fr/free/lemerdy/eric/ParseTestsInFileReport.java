@@ -47,14 +47,18 @@ public final class ParseTestsInFileReport implements Function<File, List<TestRep
       Throwables.propagate(e);
     } finally {
       Closeables.closeQuietly(fileReader);
-      if (xmler != null) {
-        try {
-          xmler.close();
-        } catch (XMLStreamException e) {
-          // Swallowing
-        }
-      }
+      closeQuietly(xmler);
     }
     return testReports;
+  }
+
+  private void closeQuietly(XMLEventReader xmler) {
+    if (xmler != null) {
+      try {
+        xmler.close();
+      } catch (XMLStreamException e) {
+        // Swallowing
+      }
+    }
   }
 }
