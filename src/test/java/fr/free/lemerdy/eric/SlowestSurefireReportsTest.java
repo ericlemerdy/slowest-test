@@ -42,24 +42,28 @@ public class SlowestSurefireReportsTest {
 
   @Test
   public void with_folders_containing_surefire_test_report_should_order_test_results_by_time() throws URISyntaxException {
-    File surefireTestFolder = new File(getResource("root_with_reports_deep_hierarchy/a-module/target/surefire-reports").toURI());
+    File surefireTestFolder = new File(getResource("root_with_reports_deep_hierarchy/a-module/target").toURI());
     
     SlowestSurefireReports slowestSurefireReports = new SlowestSurefireReports(newArrayList(surefireTestFolder));
     List<TestReport> testReports = slowestSurefireReports.readSlowestTests();
 
-    assertThat(testReports.size()).isEqualTo(1);
+    assertThat(testReports.size()).isEqualTo(2);
     Iterator<TestReport> testReportsIterator = testReports.iterator();
     TestReport testReport = testReportsIterator.next();
     assertThat(testReport.time).isEqualTo(10.001d);
     assertThat(testReport.classname).isEqualTo("fr.FullTest");
     assertThat(testReport.name).isEqualTo("should_test_full_1");
+    testReport = testReportsIterator.next();
+    assertThat(testReport.time).isEqualTo(1.01d);
+    assertThat(testReport.classname).isEqualTo("fr.ITTest");
+    assertThat(testReport.name).isEqualTo("should_test_it_1");
     assertThat(testReportsIterator.hasNext()).isFalse();
   }
   
   @Test
   public void with_multimodule_project_should_produce_report() throws Exception {
-    File module1SurefireReports = new File(getResource("root_with_maven_projects/module1/target/surefire-reports").toURI());
-    File module2SurefireReports = new File(getResource("root_with_maven_projects/module2/target/surefire-reports").toURI());
+    File module1SurefireReports = new File(getResource("root_with_maven_projects/module1/target").toURI());
+    File module2SurefireReports = new File(getResource("root_with_maven_projects/module2/target").toURI());
     
     SlowestSurefireReports slowestSurefireReports = new SlowestSurefireReports(newArrayList(module1SurefireReports, module2SurefireReports));
     List<TestReport> testReports = slowestSurefireReports.readSlowestTests();

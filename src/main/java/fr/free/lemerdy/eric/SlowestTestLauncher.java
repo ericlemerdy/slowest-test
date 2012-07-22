@@ -40,7 +40,7 @@ public class SlowestTestLauncher {
       File targetFilePath = (File) cmd.getParsedOptionValue("f");
       List<TestReport> slowestTests = new SlowestSurefireReports(targetFilePath.getAbsolutePath()).readSlowestTests();
       if (slowestTests.size() == 0) {
-        System.out.println(format("No report files found in '%s'.", targetFilePath.getAbsolutePath()));
+        System.err.println(format("No report files found in '%s'.", targetFilePath.getAbsolutePath()));
       }
       System.out.println(Joiner.on('\n').join(slowestTests));
     } else {

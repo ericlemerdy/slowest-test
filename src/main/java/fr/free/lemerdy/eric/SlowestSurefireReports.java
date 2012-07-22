@@ -16,71 +16,68 @@ import com.google.common.collect.Iterables;
 
 public class SlowestSurefireReports {
 
-  private static final FilenameFilter ONLY_SUPPORTED_TEST_RESULTS = new FilenameFilter() {
+  private static final FilenameFilter ONLY_SUPPORTED_TEST_DIRECTORY = new FilenameFilter() {
     @Override
     public boolean accept(File dir, String name) {
       return name.equals("surefire-reports") || name.equals("failsafe-reports");
     }
   };
-  
-  private static final FilenameFilter ONLY_TEST_RESULTS_FILES = new FilenameFilter() {
+
+  private static final FilenameFilter ONLY_SUPPORTED_TEST_REPORT_FILE = new FilenameFilter() {
     @Override
     public boolean accept(File dir, String name) {
       return name.startsWith("TEST-") && name.endsWith(".xml");
     }
   };
 
-  private static final FileFilter ONLY_DIRECTORIES = new FileFilter() {
+  private static final FileFilter ONLY_DIRECTORY = new FileFilter() {
     @Override
     public boolean accept(File pathname) {
       return pathname.isDirectory();
     }
   };
-  
-  private ParseTestsInFileReport parseTestsInFileReport;
 
-  private Iterable<File> foldersWithTestReports;
-  
-  private SlowestSurefireReports() {
-    this.parseTestsInFileReport = new ParseTestsInFileReport();
-    }
+  private final ParseTestsInFileReport parseTestsInFileReport = new ParseTestsInFileReport();
+
+  private final Iterable<File> targetsFolder;
 
   public SlowestSurefireReports(String targetPathname) {
-    this();
-    this.foldersWithTestReports = findAllSupportedReports(targetPathname);
+    this.targetsFolder = findAllSupportedReportsInTarget(targetPathname);
   }
 
-  public SlowestSurefireReports(Iterable<File> foldersWithReports) {
-    this();
-    this.foldersWithTestReports = foldersWithReports;
+  public SlowestSurefireReports(Iterable<File> targetsFolders) {
+    this.targetsFolder = findOnlySupportedTestsFolders(targetsFolders);
+  }
+
+  private Iterable<File> findOnlySupportedTestsFolders(Iterable<File> targetDirectories) {
+    return concat(transform(targetDirectories, new Function<File, Iterable<File>>() {
+    public Iterable<File> apply(File input) {
+      return newArrayList(firstNonNull(
+        input.listFiles(ONLY_SUPPORTED_TEST_DIRECTORY), new File[] {}));
+    }}));
   }
 
   public List<TestReport> readSlowestTests() {
-    Iterable<File> supportedReports = filterSupportedReports(foldersWithTestReports);
-    Iterable<List<TestReport>> testReportByFile = transform(supportedReports, parseTestsInFileReport);
+    Function<File, List<File>> allTestReportDir = new Function<File, List<File>>() {
+      @Override
+      public List<File> apply(File input) {
+        return newArrayList(input.listFiles(ONLY_SUPPORTED_TEST_REPORT_FILE));
+      }
+    };
+    Iterable<List<File>> allReports = Iterables.transform(targetsFolder, allTestReportDir);
+    Iterable<File> testReportFiles = Iterables.<File> concat(allReports);
+    Iterable<List<TestReport>> testReportByFile = transform(testReportFiles, parseTestsInFileReport);
     List<TestReport> allTestReports = newArrayList(concat(testReportByFile));
     Collections.sort(allTestReports);
     return allTestReports;
   }
 
-  private Iterable<File> filterSupportedReports(Iterable<File> foldersWithTestReport) {
-    Function<File, List<File>> allTestReportDir = new Function<File, List<File>>(){
-      @Override
-      public List<File> apply(File input) {
-        return newArrayList(input.listFiles(ONLY_TEST_RESULTS_FILES));
-      }
-    };
-    Iterable<List<File>> allReports = Iterables.transform(foldersWithTestReport, allTestReportDir);
-    Iterable<File> testReportFiles = Iterables.<File>concat(allReports);
-    return testReportFiles;
-  }
-
-  private Iterable<File> findAllSupportedReports(String pathname) {
-    File targetDirectory = new File(pathname);
-    Iterable<File> supportedReportDirectories = newArrayList(firstNonNull(targetDirectory.listFiles(ONLY_SUPPORTED_TEST_RESULTS), new File[]{}));
-    File[] otherDirectories = firstNonNull(targetDirectory.listFiles(ONLY_DIRECTORIES), new File[]{});
+  private Iterable<File> findAllSupportedReportsInTarget(String targetPathname) {
+    File targetDirectory = new File(targetPathname);
+    Iterable<File> supportedReportDirectories = findOnlySupportedTestsFolders(newArrayList(targetDirectory));
+    File[] otherDirectories = firstNonNull(targetDirectory.listFiles(ONLY_DIRECTORY), new File[] {});
     for (File otherDirectory : otherDirectories) {
-      Iterable<File> otherSupportedReports = findAllSupportedReports(otherDirectory.getAbsolutePath());
+      Iterable<File> otherSupportedReports = findAllSupportedReportsInTarget(otherDirectory.getAbsolutePath());
       supportedReportDirectories = Iterables.concat(supportedReportDirectories, otherSupportedReports);
     }
     return supportedReportDirectories;
