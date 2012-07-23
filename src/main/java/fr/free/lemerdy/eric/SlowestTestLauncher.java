@@ -31,7 +31,7 @@ public class SlowestTestLauncher {
     try {
       cmd = parser.parse(options, args, true);
     } catch (ParseException e) {
-      e.printStackTrace();
+      e.printStackTrace(System.err);
     }
   
     if (cmd.hasOption("help")) {
