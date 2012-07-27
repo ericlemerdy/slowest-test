@@ -27,8 +27,8 @@ public class SlowestTestMojo extends AbstractMojo {
     MavenProject mavenProject = (MavenProject) getPluginContext().get("project");
     List<File> targetFiles = newArrayList(getTargetFolderFromMavenProject().apply(mavenProject));
     targetFiles.addAll(transform(collectedProjects, getTargetFolderFromMavenProject()));
-    List<TestReport> readSlowestTests = new SlowestSurefireReports(targetFiles).readSlowestTests();
-    for (TestReport testReport : readSlowestTests) {
+    List<ExecutionTimeTestMethod> readSlowestTests = new SlowestSurefireReports(targetFiles).readSlowestTests();
+    for (ExecutionTimeTestMethod testReport : readSlowestTests) {
       getLog().info(testReport.toString());
     }
   }
@@ -37,7 +37,7 @@ public class SlowestTestMojo extends AbstractMojo {
     return new Function<MavenProject, File>() {
       public File apply(MavenProject input) {
         getLog().debug(format("Scanning project %s...", input.getId()));
-        return new File(input.getBasedir() + File.separator + "target");
+        return new File(format("%s%starget", input.getBasedir(), File.separator));
       }
     };
   }

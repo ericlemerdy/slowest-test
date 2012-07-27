@@ -17,26 +17,14 @@ public class SlowestSurefireReportsTest {
     String targetWithReports = new File(getResource("root_with_reports_deep_hierarchy").toURI()).getAbsolutePath();
     
     SlowestSurefireReports slowestSurefireReports = new SlowestSurefireReports(targetWithReports);
-    List<TestReport> testReports = slowestSurefireReports.readSlowestTests();
+    List<ExecutionTimeTestMethod> testReports = slowestSurefireReports.readSlowestTests();
 
-    assertThat(testReports.size()).isEqualTo(4);
-    Iterator<TestReport> testReportsIterator = testReports.iterator();
-    TestReport testReport = testReportsIterator.next();
-    assertThat(testReport.time).isEqualTo(11d);
-    assertThat(testReport.classname).isEqualTo("fr.PlainTest");
-    assertThat(testReport.name).isEqualTo("should_test_plain_1");
-    testReport = testReportsIterator.next();
-    assertThat(testReport.time).isEqualTo(10.001d);
-    assertThat(testReport.classname).isEqualTo("fr.FullTest");
-    assertThat(testReport.name).isEqualTo("should_test_full_1");
-    testReport = testReportsIterator.next();
-    assertThat(testReport.time).isEqualTo(1.01d);
-    assertThat(testReport.classname).isEqualTo("fr.ITTest");
-    assertThat(testReport.name).isEqualTo("should_test_it_1");
-    testReport = testReportsIterator.next();
-    assertThat(testReport.time).isEqualTo(0.011d);
-    assertThat(testReport.classname).isEqualTo("fr.PlainTest");
-    assertThat(testReport.name).isEqualTo("should_test_plain_2");
+    assertThat(testReports).hasSize(4);
+    Iterator<ExecutionTimeTestMethod> testReportsIterator = testReports.iterator();
+    assertThat(testReportsIterator.next().toString()).isEqualTo("    11,000ms fr.PlainTest.should_test_plain_1");
+    assertThat(testReportsIterator.next().toString()).isEqualTo("    10,001ms fr.FullTest.should_test_full_1");
+    assertThat(testReportsIterator.next().toString()).isEqualTo("     1,010ms fr.ITTest.should_test_it_1");
+    assertThat(testReportsIterator.next().toString()).isEqualTo("     0,011ms fr.PlainTest.should_test_plain_2");
     assertThat(testReportsIterator.hasNext()).isFalse();
   }
 
@@ -45,18 +33,12 @@ public class SlowestSurefireReportsTest {
     File surefireTestFolder = new File(getResource("root_with_reports_deep_hierarchy/a-module/target").toURI());
     
     SlowestSurefireReports slowestSurefireReports = new SlowestSurefireReports(newArrayList(surefireTestFolder));
-    List<TestReport> testReports = slowestSurefireReports.readSlowestTests();
+    List<ExecutionTimeTestMethod> testReports = slowestSurefireReports.readSlowestTests();
 
-    assertThat(testReports.size()).isEqualTo(2);
-    Iterator<TestReport> testReportsIterator = testReports.iterator();
-    TestReport testReport = testReportsIterator.next();
-    assertThat(testReport.time).isEqualTo(10.001d);
-    assertThat(testReport.classname).isEqualTo("fr.FullTest");
-    assertThat(testReport.name).isEqualTo("should_test_full_1");
-    testReport = testReportsIterator.next();
-    assertThat(testReport.time).isEqualTo(1.01d);
-    assertThat(testReport.classname).isEqualTo("fr.ITTest");
-    assertThat(testReport.name).isEqualTo("should_test_it_1");
+    assertThat(testReports).hasSize(2);
+    Iterator<ExecutionTimeTestMethod> testReportsIterator = testReports.iterator();
+    assertThat(testReportsIterator.next().toString()).isEqualTo("    10,001ms fr.FullTest.should_test_full_1");
+    assertThat(testReportsIterator.next().toString()).isEqualTo("     1,010ms fr.ITTest.should_test_it_1");
     assertThat(testReportsIterator.hasNext()).isFalse();
   }
   
@@ -66,18 +48,12 @@ public class SlowestSurefireReportsTest {
     File module2SurefireReports = new File(getResource("root_with_maven_projects/module2/target").toURI());
     
     SlowestSurefireReports slowestSurefireReports = new SlowestSurefireReports(newArrayList(module1SurefireReports, module2SurefireReports));
-    List<TestReport> testReports = slowestSurefireReports.readSlowestTests();
+    List<ExecutionTimeTestMethod> testReports = slowestSurefireReports.readSlowestTests();
 
     assertThat(testReports).hasSize(2);
-    Iterator<TestReport> testReportsIterator = testReports.iterator();
-    TestReport testReport = testReportsIterator.next();
-    assertThat(testReport.time).isEqualTo(0.003d);
-    assertThat(testReport.classname).isEqualTo("App2Test");
-    assertThat(testReport.name).isEqualTo("testApp");
-    testReport = testReportsIterator.next();
-    assertThat(testReport.time).isEqualTo(0.002d);
-    assertThat(testReport.classname).isEqualTo("App1Test");
-    assertThat(testReport.name).isEqualTo("testApp");
+    Iterator<ExecutionTimeTestMethod> testReportsIterator = testReports.iterator();
+    assertThat(testReportsIterator.next().toString()).isEqualTo("     0,003ms App2Test.testApp");
+    assertThat(testReportsIterator.next().toString()).isEqualTo("     0,002ms App1Test.testApp");
     assertThat(testReportsIterator.hasNext()).isFalse();
   }
 

@@ -18,9 +18,9 @@ import com.google.common.base.Function;
 import com.google.common.base.Throwables;
 import com.google.common.io.Closeables;
 
-public final class ParseTestsInFileReport implements Function<File, List<TestReport>> {
-  public List<TestReport> apply(File inputFile) {
-    List<TestReport> testReports = newArrayList();
+public final class ParseTestsInFileReport implements Function<File, List<ExecutionTimeTestMethod>> {
+  public List<ExecutionTimeTestMethod> apply(File inputFile) {
+    List<ExecutionTimeTestMethod> testReports = newArrayList();
     XMLInputFactory xmlif = XMLInputFactory.newInstance();
     FileReader fileReader = null;
     XMLEventReader xmler = null;
@@ -33,10 +33,10 @@ public final class ParseTestsInFileReport implements Function<File, List<TestRep
         if (event.isStartElement()) {
           StartElement element = event.asStartElement();
           if (element.getName().equals(QName.valueOf("testcase"))) {
-            TestReport testReport = new TestReport();
+            ExecutionTimeTestMethod testReport = new ExecutionTimeTestMethod();
             testReport.time = new Double(element.getAttributeByName(QName.valueOf("time")).getValue());
             testReport.classname = element.getAttributeByName(QName.valueOf("classname")).getValue();
-            testReport.name = element.getAttributeByName(QName.valueOf("name")).getValue();
+            testReport.methodName = element.getAttributeByName(QName.valueOf("name")).getValue();
             testReports.add(testReport);
           }
         }

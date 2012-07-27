@@ -57,7 +57,7 @@ public class SlowestSurefireReports {
     }}));
   }
 
-  public List<TestReport> readSlowestTests() {
+  public List<ExecutionTimeTestMethod> readSlowestTests() {
     Function<File, List<File>> allTestReportDir = new Function<File, List<File>>() {
       @Override
       public List<File> apply(File input) {
@@ -66,8 +66,8 @@ public class SlowestSurefireReports {
     };
     Iterable<List<File>> allReports = Iterables.transform(targetsFolder, allTestReportDir);
     Iterable<File> testReportFiles = Iterables.<File> concat(allReports);
-    Iterable<List<TestReport>> testReportByFile = transform(testReportFiles, parseTestsInFileReport);
-    List<TestReport> allTestReports = newArrayList(concat(testReportByFile));
+    Iterable<List<ExecutionTimeTestMethod>> testReportByFile = transform(testReportFiles, parseTestsInFileReport);
+    List<ExecutionTimeTestMethod> allTestReports = newArrayList(concat(testReportByFile));
     Collections.sort(allTestReports);
     return allTestReports;
   }

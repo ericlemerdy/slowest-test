@@ -38,7 +38,7 @@ public class SlowestTestLauncher {
       printHelp(options);
     } else if (cmd.hasOption("f")) {
       File targetFilePath = (File) cmd.getParsedOptionValue("f");
-      List<TestReport> slowestTests = new SlowestSurefireReports(targetFilePath.getAbsolutePath()).readSlowestTests();
+      List<ExecutionTimeTestMethod> slowestTests = new SlowestSurefireReports(targetFilePath.getAbsolutePath()).readSlowestTests();
       if (slowestTests.size() == 0) {
         System.err.println(format("No report files found in '%s'.", targetFilePath.getAbsolutePath()));
       }
